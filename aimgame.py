@@ -28,9 +28,9 @@ circle_growth_rate = 0.001  # Adjusted growth rate here
 circle_x, circle_y = screen_width // 2, screen_height // 2
 circle_radius = 0  # Initial radius
 circle_growing = False  # Initially not growing
-circle_grow_time = 3000  # 3 seconds in milliseconds
+circle_grow_time = 2000  # 2 seconds in milliseconds
 circle_last_grow_time = 0
-circle_disappear_time = 3000  # 3 seconds in milliseconds
+circle_disappear_time = 2000  # 2 seconds in milliseconds
 circle_last_disappear_time = 0
 show_start_button = True
 
@@ -99,6 +99,10 @@ while running:
                     circle_last_disappear_time = current_time
                     circle_growing = True  # Start new circle immediately
 
+                elif distance >= circle_radius:
+
+                    score -= 1
+
     # Draw background first
     screen.blit(background, (0, 0))
 
@@ -112,26 +116,30 @@ while running:
             # Calculate current radius based on elapsed time and growth rate
             circle_radius += circle_max_radius * circle_growth_rate
 
-            # Calculate points based on current growth progress
-            elapsed_seconds = elapsed_grow_time / 1000
-            # current_points = max(0, int(1000 * (1 - elapsed_seconds)))
-            current_points = max(0, int(1000 - ((1/3) * elapsed_grow_time)))
+            # Add or subtract points based on how long it takes to click the target
+
+            if 0<= elapsed_grow_time <=700: 
+                current_points = 1
+            elif 701<= elapsed_grow_time <=2000:
+                current_points = -1
+            
 
             # Draw concentric circle (bullseye effect)
-            pygame.draw.circle(screen, (255, 0, 0), (circle_x, circle_y), int(circle_radius), 3)
+            if 0<= elapsed_grow_time <=700: 
+                pygame.draw.circle(screen, (0, 255, 0), (circle_x, circle_y), int(circle_radius), 3)
+            elif 701<= elapsed_grow_time <=2000:
+                pygame.draw.circle(screen, (255, 0, 0), (circle_x, circle_y), int(circle_radius), 3)
+       
 
-        else:
-            # Reduce current points linearly over time if circle disappears on its own
-            # elapsed_disappear_seconds = elapsed_disappear_time / 1000
-            # current_points = max(0, int(1000 * (1 - elapsed_disappear_seconds)))
-
-            if elapsed_disappear_time >= circle_disappear_time:
-                circle_growing = False
-                circle_radius = 0
-                circle_x, circle_y = generate_random_position()
-                circle_last_grow_time = current_time
-                circle_last_disappear_time = current_time
-                circle_growing = True  # Start new circle immediately
+        elif elapsed_disappear_time >= circle_disappear_time:
+            score -= 1
+            circle_growing = False
+            circle_radius = 0
+            circle_x, circle_y = generate_random_position()
+            circle_last_grow_time = current_time
+            circle_last_disappear_time = current_time
+            circle_growing = True  # Start new circle immediately
+        
 
     # Draw score
     draw_score()
