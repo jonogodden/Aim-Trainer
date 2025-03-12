@@ -1,4 +1,4 @@
-# A# ?? Aim Trainer (Pygame)
+# Aim Trainer (Pygame)
 
 A fast-paced **aim training game** built with **Pygame**. Improve your reaction time and precision by clicking on targets as they appear!  
 
